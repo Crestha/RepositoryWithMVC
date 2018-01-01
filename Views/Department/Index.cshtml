@@ -1,0 +1,28 @@
+﻿@using RepositoryWithMVC.Models
+@model IEnumerable<Department>
+
+@{
+    ViewBag.Title = "Department List";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3>List of Departments Name</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <table class="table table-hover table-striped">
+            @foreach (Department department in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.ActionLink(department.DepartmentName, "Index", "Employee", new { departmentId = department.DepartmentId }, null)
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+
