@@ -1,0 +1,115 @@
+﻿@model RepositoryWithMVC.Models.Employee
+
+@{
+    ViewBag.Title = "UpdateEmployee";
+}
+
+<div class="form-horizontal">
+    <div class="form-group">
+        <div class="col-lg-12">
+            <h3>Update Employee</h3>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-12">
+            @using (Html.BeginForm("EditEmployee", "Employee", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.EmployeeName, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.EmployeeName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.EmployeeName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-lg-10">
+                        @Html.DropDownListFor(model => model.Gender, new List<SelectListItem>
+               {
+                   new SelectListItem { Text = "Male", Value="Male"},
+                   new SelectListItem { Text = "Female", Value="Female"}
+               }, "Select Gender", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DateOfBirth, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-lg-10">
+                        @Html.TextBoxFor(model => model.DateOfBirth, "{0:MM/dd/yyyy}", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.DateOfBirth, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PhoneNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Photo, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-lg-10">
+                            @Html.TextBox("Photo", "", new { @type = "file", @class = "browse-txt" })
+                            @Html.ValidationMessageFor(m => m.Photo, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.AlternateText, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.AlternateText, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.AlternateText, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DepartmentId, "Department", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-lg-10">
+                            @Html.DropDownListFor(m => m.DepartmentId, new List<SelectListItem>
+               {
+                   new SelectListItem{ Text = "IT", Value="1"},
+                   new SelectListItem{ Text="HR", Value ="2"},
+                   new SelectListItem{ Text="Payroll", Value="3"}
+               }, "Select Department", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.DepartmentId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Salary, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Salary, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Save" class="btn btn-info" />
+                        </div>
+                    </div>
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-lg-12">
+            @Html.ActionLink("Back to List", "Index", "Employee")
+        </div>
+    </div>
+</div>
