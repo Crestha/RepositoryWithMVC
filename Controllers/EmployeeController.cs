@@ -1,47 +1,41 @@
-﻿using RepositoryWithMVC.Models;
-using RepositoryWithMVC.Repository;
+using RepositoryWithMVC.model;
+using RepositoryWithMVC.repository;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Web;
 using System.Web.Mvc;
 
 namespace RepositoryWithMVC.Controllers
 {
-    //When we instantiate the repository in the controller, we'll use the interface so that the controller will accept a reference to any object that implements the repository interface. 
     public class EmployeeController : Controller
     {
-        //The controller now declares a class variable for an object that implements the IEmployeeRepository interface instead of the context class:
-        private IEmployeeRepository _iEmployeeRepository;
+        private IEmployeeRepository _EmployeeRepository;
 
-        //The default (parameterless) constructor creates a new context instance
-        public EmployeeController()
+        public EmployeeController() : this(null)
         {
-            _iEmployeeRepository = new EmployeeRepository(new EmployeeContext());
-        }
-
-        //optional constructor allows the caller to pass in a context instance.
-        public EmployeeController(IEmployeeRepository iEmployeeRepository)
-        {
-            _iEmployeeRepository = iEmployeeRepository;
         }
         
-        // GET: /RepositoryEmployee/Index
+        public EmployeeController(IEmployeeRepository empRepo)
+        {
+            _EmployeeRepository = empRepo ?? new EmployeeRepository();
+        }
+
+        [HttpGet]
         public ActionResult Index(int? departmentId)
         {
             if (departmentId != null)
             {
-                var model = _iEmployeeRepository.GetEmployeeByDepartment(departmentId);
+                IEnumerable<Employee> model = _EmployeeRepository.GetEmployeeByDepartment(departmentId);
                 return View(model);
             }
             else
             {
-                var model = _iEmployeeRepository.GetAllEmployees();
+                IEnumerable<Employee> model = _EmployeeRepository.GetAllEmployees();
                 return View(model);
             }
         }
-
-        //Create
-        // GET: /RepositoryEmployee/AddEmployee
+        
         [HttpGet]
         public ActionResult AddEmployee()
         {
@@ -60,7 +54,7 @@ namespace RepositoryWithMVC.Controllers
                     {
                         if (Photo.ContentLength > 0)
                         {
-                            //for checking uploaded file is image or not
+                            // For checking uploaded file is image or not.
                             if (Path.GetExtension(Photo.FileName).ToLower() == ".jpg"
                                 || Path.GetExtension(Photo.FileName).ToLower() == ".png"
                                 || Path.GetExtension(Photo.FileName).ToLower() == ".gif"
@@ -69,13 +63,13 @@ namespace RepositoryWithMVC.Controllers
                             {
                                 string fileName = Path.GetFileName(Photo.FileName);
 
-                                var pathToStoreImageInsideProjectFolder = Path.Combine(Server.MapPath("~/Photos"), fileName);
+                                string pathToStoreImageInsideProjectFolder = Path.Combine(Server.MapPath("~/Photos"), fileName);
                                 Photo.SaveAs(pathToStoreImageInsideProjectFolder);
 
                                 employee.Photo = "~/Photos/" + fileName;
 
-                                _iEmployeeRepository.InsertEmployee(employee);
-                                _iEmployeeRepository.Save();
+                                _EmployeeRepository.InsertEmployee(employee);
+                                _EmployeeRepository.Save();
                                 return RedirectToAction("Index", "Employee");
                             }
                         }
@@ -89,17 +83,17 @@ namespace RepositoryWithMVC.Controllers
             return View(employee);
         }
 
-        // GET: /RepositoryEmployee/Details/1
+        [HttpGet]
         public ActionResult EmployeeDetails(int employeeId)
         {
-            Employee model = _iEmployeeRepository.GetEmployeeById(employeeId);
+            Employee model = _EmployeeRepository.GetEmployeeById(employeeId);
             return View(model);
         }
 
-        // GET: /RepositoryEmployee/EditEmployee/1
+        [HttpGet]
         public ActionResult EditEmployee(int employeeId)
         {
-            Employee model = _iEmployeeRepository.GetEmployeeById(employeeId);
+            Employee model = _EmployeeRepository.GetEmployeeById(employeeId);
             return View(model);
         }
 
@@ -115,7 +109,6 @@ namespace RepositoryWithMVC.Controllers
                     {
                         if (Photo.ContentLength > 0)
                         {
-                            //for checking uploaded file is image or not
                             if (Path.GetExtension(Photo.FileName).ToLower() == ".jpg"
                                 || Path.GetExtension(Photo.FileName).ToLower() == ".png"
                                 || Path.GetExtension(Photo.FileName).ToLower() == ".gif"
@@ -124,13 +117,13 @@ namespace RepositoryWithMVC.Controllers
                             {
                                 string fileName = Path.GetFileName(Photo.FileName);
 
-                                var pathToStoreImageInsideProjectFolder = Path.Combine(Server.MapPath("~/Photos"), fileName);
+                                string pathToStoreImageInsideProjectFolder = Path.Combine(Server.MapPath("~/Photos"), fileName);
                                 Photo.SaveAs(pathToStoreImageInsideProjectFolder);
 
                                 employee.Photo = "~/Photos/" + fileName;
 
-                                _iEmployeeRepository.UpdateEmployee(employee);
-                                _iEmployeeRepository.Save();
+                                _EmployeeRepository.UpdateEmployee(employee);
+                                _EmployeeRepository.Save();
                                 return RedirectToAction("Index", "Employee");
                             }
                         }
@@ -144,27 +137,19 @@ namespace RepositoryWithMVC.Controllers
             return View(employee);
         }
 
-        // GET: /RepositoryEmployee/DeleteEmployee/1
+        [HttpGet]
         public ActionResult DeleteEmployee(int employeeId)
         {
-            Employee model = _iEmployeeRepository.GetEmployeeById(employeeId);
+            Employee model = _EmployeeRepository.GetEmployeeById(employeeId);
             return View(model);
         }
 
         [HttpPost]
         public ActionResult DeleteEmployee(Employee employee)
         {
-            _iEmployeeRepository.DeleteEmployee(employee.EmployeeId);
-            _iEmployeeRepository.Save();
+            _EmployeeRepository.DeleteEmployee(employee.EmployeeId);
+            _EmployeeRepository.Save();
             return RedirectToAction("Index", "Employee");
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            //the Dispose method now disposes the repository instead of the context:
-            _iEmployeeRepository.Dispose();
-            base.Dispose(disposing);
-        }
-
     }
 }
