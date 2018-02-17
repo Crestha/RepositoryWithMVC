@@ -1,29 +1,27 @@
-﻿using RepositoryWithMVC.Models;
-using RepositoryWithMVC.Repository;
+using RepositoryWithMVC.model;
+using RepositoryWithMVC.repository;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
 using System.Web.Mvc;
 
 namespace RepositoryWithMVC.Controllers
 {
     public class DepartmentController : Controller
     {
-        private IDepartmentRepository _iDepartmentRepository;
-        public DepartmentController()
+        private IDepartmentRepository _DepartmentRepository;
+
+        public DepartmentController() : this(null)
         {
-            _iDepartmentRepository = new DepartmentRepository(new EmployeeContext());
         }
 
-        public DepartmentController(IDepartmentRepository iEmployeeRepository)
+        public DepartmentController(IDepartmentRepository departRepo)
         {
-            _iDepartmentRepository = iEmployeeRepository;
+            _DepartmentRepository = departRepo ?? new DepartmentRepository();
         }
 
         [HttpGet]
         public ActionResult Index()
         {
-            IEnumerable<Department> model = _iDepartmentRepository.GetAllDepartment();
+            IEnumerable<Department> model = _DepartmentRepository.GetAllDepartment();
             return View(model);
         }
     }
